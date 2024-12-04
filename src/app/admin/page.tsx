@@ -21,6 +21,26 @@ export default function AdminPage() {
   const [newScore, setNewScore] = useState<string>("");
   const [newTotalKills, setNewTotalKills] = useState<string>("");
 
+  useEffect(() => {
+    // Verifica se está no ambiente do cliente
+    if (typeof window !== "undefined") {
+      const fetchTeams = async () => {
+        try {
+          const teamsCollection = collection(db, "teams");
+          const teamsSnapshot = await getDocs(teamsCollection);
+          const teamsList = teamsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Team[];
+          setTeams(teamsList.sort((a, b) => b.score - a.score));
+        } catch (error) {
+          console.error("Error fetching teams: ", error);
+        }
+      };
+
+      fetchTeams();
+    }
+  }, []);
   
   const handleAddTeam = async (e: React.FormEvent) => {
     e.preventDefault();
