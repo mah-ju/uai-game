@@ -6,7 +6,7 @@ import {
   getDocs,
   updateDoc,
   doc,
-} from "firebase/firestore";
+} from "firebase/firestore"; 
 import { db } from "@/firebaseConfig";
 import { Team } from "@/types";
 import { Plus, X, Pencil, Check, Dot } from "lucide-react";
@@ -21,20 +21,7 @@ export default function AdminPage() {
   const [newScore, setNewScore] = useState<string>("");
   const [newTotalKills, setNewTotalKills] = useState<string>("");
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      const teamsCollection = collection(db, "teams");
-      const teamsSnapshot = await getDocs(teamsCollection);
-      const teamsList = teamsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Team[];
-      setTeams(teamsList.sort((a, b) => b.score - a.score));
-    };
-
-    fetchTeams();
-  }, []);
-
+  
   const handleAddTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     if (players.length === 0) {

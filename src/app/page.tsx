@@ -14,20 +14,27 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTeams = async () => {
-      const teamsCollection = collection(db, "teams");
-      const teamsSnapshot = await getDocs(teamsCollection);
-      const teamsList = teamsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Team[];
-      setTeams(teamsList.sort((a, b) => b.score - a.score));
-      setLoading(false);
-    };
+    if (typeof window !== 'undefined') {
+      const fetchTeams = async () => {
+        try {
+          const teamsCollection = collection(db, "teams");
+          const teamsSnapshot = await getDocs(teamsCollection);
+          const teamsList = teamsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Team[];
 
-    fetchTeams();
-  }, []);
+          setTeams(teamsList.sort((a, b) => b.score - a.score));
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching teams:", error);
+        }
+      };
 
+      fetchTeams();
+    }
+  }, []); 
+  
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
